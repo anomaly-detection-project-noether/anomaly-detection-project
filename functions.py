@@ -96,23 +96,35 @@ def top_15_plot(df):
 
 
 def check_permissions(df, url):
+    '''
+    Checks to see if any students accessed curiculum material that they should not have access to
+    '''
     c = df[(df.start_date.str.startswith('2019')) & (df.program_id == 3) & (df[url].str.startswith('java'))]
     print(c)
     print()
     
 def post_grad(df, program, url):
+    '''
+    returns the most searched urls by students after graduation
+    '''
     b = df[(df.program_id == program) & (df.date > df.end_date) 
      & (df[url].str.startswith(('/', 'index', 'search'))== False)][url].value_counts().head()
     print(b)
     print()
     
 def least_total(df, url, head, values):
+    '''
+    returns the least searched url with a minimum of x values among all cohorts
+    '''
     a = df[url].value_counts()[df[url].value_counts() > values].sort_values(ascending = True).head(head)
     print(a)
     print()
 
     
 def least_cohort(df, url, head, values):
+    '''
+    returns the least used url with a minimum of x values by cohort name
+    '''
     coh = df.cohort_id.unique()    
     for i in coh:
         a = df[(df.cohort_id == i) & (df[url].str.startswith(('/', 'uploads', 'wp', '%', 'index'))== False)][url].groupby([df[url], df.name])
