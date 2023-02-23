@@ -108,6 +108,6 @@ def least_total(df, url, head, values):
 def least_cohort(df, url, head, values):
     coh = df.cohort_id.unique()    
     for i in coh:
-    a = df[(df.cohort_id == i) & (df.path.str.startswith(('/', 'uploads', 'wp', '%', 'index'))== False)][url].groupby([df[url], df.name])
-    b = a.value_counts()[a.value_counts() > values].sort_values(ascending = True).head(head)
-    print(b)
+        a = df[(df.cohort_id == i) & (df.path.str.startswith(('/', 'uploads', 'wp', '%', 'index'))== False)][url].groupby([df[url], df.name])
+        b = a.value_counts()[a.value_counts() > values].sort_values(ascending = True).head(head)
+        print(b)
