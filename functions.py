@@ -95,19 +95,27 @@ def top_15_plot(df):
 
 
 
-def check_permissions(df):
-    df[(df.date.str.startswith('2019')) & (df.program_id == 3) & (df.path.str.startswith('java'))]
-
-def post_grad(df, program):
-    df[(df.program_id == program) & (df.date > df.end_date) 
-     & (df.path.str.startswith(('/', 'index', 'search'))== False)].path.value_counts().head()
-
+def check_permissions(df, url):
+    c = df[(df.start_date.str.startswith('2019')) & (df.program_id == 3) & (df[url].str.startswith('java'))]
+    print(c)
+    print()
+    
+def post_grad(df, program, url):
+    b = df[(df.program_id == program) & (df.date > df.end_date) 
+     & (df[url].str.startswith(('/', 'index', 'search'))== False)][url].value_counts().head()
+    print(b)
+    print()
+    
 def least_total(df, url, head, values):
-    df[url].value_counts()[df[url].value_counts() > values].sort_values(ascending = True).head(head)
+    a = df[url].value_counts()[df[url].value_counts() > values].sort_values(ascending = True).head(head)
+    print(a)
+    print()
 
+    
 def least_cohort(df, url, head, values):
     coh = df.cohort_id.unique()    
     for i in coh:
-        a = df[(df.cohort_id == i) & (df.path.str.startswith(('/', 'uploads', 'wp', '%', 'index'))== False)][url].groupby([df[url], df.name])
+        a = df[(df.cohort_id == i) & (df[url].str.startswith(('/', 'uploads', 'wp', '%', 'index'))== False)][url].groupby([df[url], df.name])
         b = a.value_counts()[a.value_counts() > values].sort_values(ascending = True).head(head)
         print(b)
+        print()

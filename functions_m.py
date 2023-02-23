@@ -1,6 +1,7 @@
 
 import os
 import pandas as pd
+import numpy as np
 
 
 
@@ -25,16 +26,16 @@ def lesson_most_accessed(df):
     df['front_end_cohort'] = np.where(df['program_id'] == 4, 1, 0)
 
     # most-accessed PHP lesson is javascript-i (if not counting index.html, which was accessed more)
-    php = df[df['php_cohort'] == 1]['path'].value_counts().iloc[2:3]
+    php = df[df['php_cohort'] == 1]['url_path'].value_counts().iloc[2:3]
 
     # most-accessed full-stack _ java lesson is javascript-i
-    fsj = df[df['fs_java_cohort'] == 1]['path'].value_counts().iloc[1:2]
+    fsj = df[df['fs_java_cohort'] == 1]['url_path'].value_counts().iloc[1:2]
 
     # most-accessed DS lesson is the classification overview
-    ds = df[df['ds_cohort'] == 1]['path'].value_counts().iloc[2:3]
+    ds = df[df['ds_cohort'] == 1]['url_path'].value_counts().iloc[2:3]
 
     # most-accessed front-end lesson is content/html-css 
-    fe = df[df['front_end_cohort'] == 1]['path'].value_counts().head(1)
+    fe = df[df['front_end_cohort'] == 1]['url_path'].value_counts().head(1)
     
     print(f'The most accessed PHP cohort lesson page is {php}.') 
     print(f'The most accessed full-stack java cohort lesson page is {fsj}.')
