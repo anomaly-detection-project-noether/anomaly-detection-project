@@ -1,4 +1,10 @@
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import math as m
+
 def student_activity_plot(df):
     '''
     This function takes in a dataframe and returns a plot of the total count of student activity
@@ -14,17 +20,17 @@ def student_activity_plot(df):
     active_students_df= df.loc[df['days_from_enddate'] < 0]
     inactive_students_df= df.loc[df['days_from_enddate'] > 0]
 
-    daily_hits = active_students_df['path'].resample('d').count()
+    daily_hits = active_students_df['url_path'].resample('d').count()
     weekly_avg = daily_hits.ewm(span=7).mean()
     monthly_avg = daily_hits.ewm(span=30).mean()
     quarterly_avg = daily_hits.ewm(span=90).mean()
 
-    daily_hitss = inactive_students_df['path'].resample('d').count()
+    daily_hitss = inactive_students_df['url_path'].resample('d').count()
     weekly_avgs = daily_hitss.ewm(span=7).mean()
     monthly_avgs = daily_hitss.ewm(span=30).mean()
     quarterly_avgs = daily_hitss.ewm(span=90).mean()
 
-    daily_hitssss = df['path'].resample('d').count()
+    daily_hitssss = df['url_path'].resample('d').count()
     weekly_avgsss = daily_hitssss.ewm(span=7).mean()
     monthly_avgsss = daily_hitssss.ewm(span=30).mean()
     quarterly_avgsss = daily_hitssss.ewm(span=90).mean()
@@ -78,16 +84,24 @@ def top_15_plot(df):
     '''
     This function takes in a dataframe and returns a plot of the top 15 user ids by total count of paths
     '''
-    ids= df.loc[df['name'].isnull()]
+    
+#     df = pd.read_csv('curriculum_logs.csv', index_col = [0])
 
-    new_ids_df =ids.groupby(by=['user_id']).count()
+    j = pd.read_csv('right_logs.csv', index_col = [0])
+
+    ids = j.loc[j['name'].isnull()]
+
+    new_ids_df = ids.groupby (by = ['user_id']).count()
 
     new_ids_df['path'].sort_values(ascending=False).head(15).index
 
-    sns.barplot(new_ids_df, 
-                x=new_ids_df['path'].sort_values(ascending=False).head(15).index, 
-                y=new_ids_df['path'].sort_values(ascending=False).head(15),
-               palette="Spectral")
+    x=new_ids_df['path'].sort_values(ascending=False).head(15).index
+
+    y=new_ids_df['path'].sort_values(ascending=False).head(15)
+
+    sns.barplot( x=x, 
+                    y=y,
+                   palette="Spectral")
     plt.title("Top 15 User IDs By Total Count of Paths ")
     plt.ylabel("Path")
     plt.xlabel("User ID")
@@ -99,35 +113,47 @@ def check_permissions(df, url):
     '''
     Checks to see if any students accessed curiculum material that they should not have access to
     '''
-    c = df[(df.start_date.str.startswith('2019')) & (df.program_id == 3) & (df[url].str.startswith('java'))]
+    c = df[(df['date2'].str.startswith('2019')) & (df.program_id == 3) & (df[url].str.startswith('java'))]
+    
     print(c)
     print()
+    
     
 def post_grad(df, program, url):
     '''
     returns the most searched urls by students after graduation
     '''
+    
     b = df[(df.program_id == program) & (df.date > df.end_date) 
      & (df[url].str.startswith(('/', 'index', 'search'))== False)][url].value_counts().head()
+    
     print(b)
     print()
     
+    
 def least_total(df, url, head, values):
+    
     '''
     returns the least searched url with a minimum of x values among all cohorts
     '''
+    
     a = df[url].value_counts()[df[url].value_counts() > values].sort_values(ascending = True).head(head)
+    
     print(a)
     print()
 
     
 def least_cohort(df, url, head, values):
+    
     '''
     returns the least used url with a minimum of x values by cohort name
     '''
+    
     coh = df.cohort_id.unique()    
+    
     for i in coh:
         a = df[(df.cohort_id == i) & (df[url].str.startswith(('/', 'uploads', 'wp', '%', 'index'))== False)][url].groupby([df[url], df.name])
         b = a.value_counts()[a.value_counts() > values].sort_values(ascending = True).head(head)
+        
         print(b)
         print()

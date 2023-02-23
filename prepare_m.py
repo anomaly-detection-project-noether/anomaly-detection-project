@@ -14,6 +14,8 @@ def to_datetime(df, col):
     modified dataframe
     '''
     
+    df['date2'] = df['date']
+                    
     # change 'date' to datetime format
     df[col] = pd.to_datetime(df[col])
     
